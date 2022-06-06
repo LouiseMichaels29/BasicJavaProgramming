@@ -75,7 +75,8 @@ public class Main {
 			System.out.println("1. Print Tree");
 			System.out.println("2. Tree Height");
 			System.out.println("3. Tree Width");
-			System.out.println("4. Search Node");
+			System.out.println("4. In Order Successor");
+			System.out.println("5. Search Node");
 			int option = Integer.parseInt(scanner.nextLine());
 
 			switch(option) {
@@ -93,6 +94,13 @@ public class Main {
 				break;
 				
 				case 4:
+				System.out.println("Enter input node: ");
+				Node inputNode = tree.getNode(root, Integer.parseInt(scanner.nextLine()));
+				System.out.println("In order successor: " + tree.inOrderSuccessor(inputNode).data);
+				break;
+				
+				case 5:
+				System.out.println("Enter input node: ");
 				int search = Integer.parseInt(scanner.nextLine());
 				if(tree.search(root, search)) System.out.println("Node " + search + " found in BST!");
 				else System.out.println("Node " + search + " not found in BST.");

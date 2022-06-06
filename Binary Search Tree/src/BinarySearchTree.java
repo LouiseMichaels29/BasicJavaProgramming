@@ -1,18 +1,76 @@
 public class BinarySearchTree {
 	
-	//Iterate through left and then right side of tree 
+	/* Iterate through left and right side of tree. Add parent to the previous node recursively. */
 	public Node insert(Node node, int data) {
 		
 		if(node == null) 
 			return new Node(data);
 	
-		else if(data < node.data)
-			node.left = insert(node.left, data);
+		else if(data < node.data) {
+			
+			Node leftChild = insert(node.left, data);
+			node.left = leftChild;
+			leftChild.parent = node;
+		}
 		
-		else if(data > node.data)
-			node.right = insert(node.right, data);
+		else if(data > node.data) {
+			
+			Node rightChild = insert(node.right, data);
+			node.right = rightChild;
+			rightChild.parent = node;
+		}
 		
 		return node;
+	}
+
+	/* In order successor of the input node. The in order successor of a node is the next smallest node in the in order traversal. */
+	public Node inOrderSuccessor(Node node) {
+		
+		if(node == null)
+			return null;
+		
+		/* If there is a right node, return the node with the smallest value from the next right node. */
+		if(node.right != null)
+			return minNode(node.right);
+		
+		/* Else, continue to traverse the tree up recursively until we reach the next left node of the parent. */
+		else {
+			
+			Node current = node;
+			Node parent = node.parent;
+			
+			while(parent != null && parent.left != current) {
+				
+				current = parent;
+				parent = parent.parent;
+			}
+			
+			return parent;
+		}
+	}
+	
+	//Retrieve the minimum node from the given node in the BST. 
+	public Node minNode(Node node) {
+		
+		Node current = node;
+		
+		while(current.left != null)
+			current = current.left;
+		
+		return current;
+	}
+	
+	/* Return a node from binary search tree */
+	public Node getNode(Node node, int data) {
+		
+		if(node.data == data) 
+			return node;
+
+		else if(data < node.data)
+		   return getNode(node.left, data);
+		
+		else
+		   return getNode(node.right, data);
 	}
 	
 	//Get height of binary tree. (Greatest value from root to leaf node)
@@ -30,7 +88,7 @@ public class BinarySearchTree {
 	//Find the width of binary tree. At each level of the height, return the greatest number of nodes 
 	public int getMaxWidth(Node node) {
 		
-		int height = height(node);
+		int height = (getHeight(node) + 1);
 		int maxWidth = 0;
 		int width = 0;
 		
@@ -59,20 +117,6 @@ public class BinarySearchTree {
 					+ getWidth(node.right, level - 1);
 		
 		return 0;
-	}
-	
-	//Get height for finding width. (Width of root node (one) for height (zero)) 
-	public int height(Node node) {
-		
-		if(node == null)
-			return 0;
-		
-		else {
-			
-			int left = height(node.left);
-			int right = height(node.right);
-			return (left > right) ? (left + 1) : (right + 1);
-		}
 	}
 	
 	//Search for node in binary tree. Return true if any node along the path matches the input data

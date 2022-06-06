@@ -55,8 +55,8 @@ public class Main {
 	//graph class. 
 	public static void user() {
 
-		System.out.println("Enter A for Dijkstra's algorithm or B for all nodes "
-									+ " within' a given distance:");
+		System.out.println("Enter 'a' for Dijkstra's algorithm, 'b' for all nodes "
+									+ " within' a given distance, or 'c' for depth first or breadth first search :");
 		char option = scanner.nextLine().charAt(0);
 		option = Character.toLowerCase(option);
 		
@@ -75,6 +75,21 @@ public class Main {
 			System.out.println("Enter eq# for equal to        Example: eq8 (all nodes equal to eight)");
 			String var = scanner.nextLine();
 			graph.getOptionB(source, var);	
+		}
+		
+		else if(option == 'c') {
+			
+			System.out.println("Enter df for depth first or bf for breadth first: "); String input = scanner.nextLine();
+			System.out.println("Enter source node: "); String source = scanner.nextLine();
+			
+			if(input.equals("bf")) 
+				graph.breadthFirstSearch(source);
+			
+			else if(input.equals("df")) 
+				graph.depthFirstSearch(source);
+			
+			else
+				System.out.println("Invalid input.");
 		}
 		
 		else {

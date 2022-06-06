@@ -3,11 +3,11 @@ import java.util.*;
 public class Graph {
 	
 	//Here we use a hash map for storing our graph. 
-	private HashMap<String, Vertex> storageVertex;
+	private HashMap<String, Vertex> graph;
 	
 	public Graph() {
 		
-		storageVertex = new HashMap<String, Vertex>();
+		graph = new HashMap<String, Vertex>();
 	}
 	
 	//Add edge method will add a new edge to our graph for each line in the file. We first check if the source and target vertex are already in our graph. 
@@ -25,13 +25,13 @@ public class Graph {
 	private Vertex getVertex(String currentVertexName) {
 		
 		//We first check if our string value is found in our hash map. If so, we return the vertex at the end of the method. 
-		Vertex currentVertex = storageVertex.get(currentVertexName);
+		Vertex currentVertex = graph.get(currentVertexName);
 		
 		//Otherwise, if we have a null value, we will create a new vertex and add it to our graph. 
 		if(currentVertex == null) {
 			
 			currentVertex = new Vertex(currentVertexName);
-			storageVertex.put(currentVertexName, currentVertex);
+			graph.put(currentVertexName, currentVertex);
 		}
 		
 		return currentVertex;
@@ -53,7 +53,7 @@ public class Graph {
 			Vertex currentVertex = vertexQueue.poll();
 			
 			//For every edge of that vertex, we will get the target, and store the new distance if it is less than the previous distance. 
-			for(Edge edge : currentVertex.getAdjacencyMatrix()) {
+			for(Edge edge : currentVertex.getEdges()) {
 				
 				Vertex nextVertex = edge.getTarget();
 
@@ -84,9 +84,9 @@ public class Graph {
 		else if(first.equals("gt")) option = source + " greater than " + number + " : ";
 		else if(first.equals("eq")) option = source + " equal to " + number + " : ";
 		
-		for(String name : storageVertex.keySet()) {
+		for(String name : graph.keySet()) {
 
-			Vertex targetVertex = storageVertex.get(name);
+			Vertex targetVertex = graph.get(name);
 			if(first.equals("lt")) 
 				if((targetVertex.getDistance() < number) && (targetVertex.getDistance() > 0))
 					vertexArrayList.add(targetVertex);
@@ -111,12 +111,46 @@ public class Graph {
 			System.out.println();
 		}
 	}
+	
+	/* Depth first search. Start at the source vertex, iterate through the first edge of all vertexes who have not yet been visited. */
+	public void depthFirstSearch(String source) {
+		
+		Vertex getSource = graph.get(source);
+		getSource.setVisited(true);
+		System.out.print(getSource.getName() + " ----> ");
+		
+		for(int i = 0; i < getSource.getEdges().size(); i++)
+			if(!getSource.getEdges().get(i).getTarget().isVisited())
+				depthFirstSearch(getSource.getEdges().get(i).getTarget().getName());
+	}
+	
+	/* Breadth first search. Start at the source vertex, iterate through all edges of that vertex, then proceed to the next vertex in the list. */
+	public void breadthFirstSearch(String source) {
+		
+		Vertex getSource = graph.get(source);
+		LinkedList<Vertex> queue = new LinkedList<Vertex>();
+		getSource.setVisited(true);
+		queue.add(getSource);
+		
+		while(!queue.isEmpty()) {
+			
+			getSource = queue.poll();
+			System.out.print(getSource.getName() + " -----> ");
+			
+			for(int i = 0; i < getSource.getEdges().size(); i++) {
+				if(!getSource.getEdges().get(i).getTarget().isVisited()) {
+					getSource.getEdges().get(i).getTarget().setVisited(true);
+					queue.add(getSource.getEdges().get(i).getTarget());
+				}
+			}
+		}
+	}
 
 	//For options A and B we will first execute Dijkstra's algorithm from the source vertex from user input
 	public void getOptionA(String source, String target) {
 		
 		getSourceVertex(source);
-		Vertex targetVertex = storageVertex.get(target);
+		Vertex targetVertex = graph.get(target);
 		System.out.println(source + " -> " + targetVertex.getName() + " : " + targetVertex.getDistance());
 	}
 	
@@ -132,7 +166,7 @@ public class Graph {
 
 	public void getSourceVertex(String source) {
 		
-		Vertex sourceVertex = storageVertex.get(source);
+		Vertex sourceVertex = graph.get(source);
 		getShortestPathToEachNode(sourceVertex);
 	}
 }
